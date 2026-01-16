@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptFactory - Modern MVP</title>
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --primary-color: #6366f1; /* Indigo */
+            --primary-hover: #4f46e5;
+            --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label.section-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #374151;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none; /* Custom arrow would go here in a full app */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236b7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 0.8rem auto;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* --- MODERN RADIO CHIPS --- */
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Hide the actual input radio */
+        .radio-group input[type="radio"] {
+            display: none;
+        }
+
+        /* Style the label as a button/chip */
+        .radio-chip {
+            padding: 10px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            background: #fff;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .radio-chip:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        /* State when checked */
+        .radio-group input[type="radio"]:checked + .radio-chip {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+            text-align: center;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--text-muted);
+            border: 2px solid var(--border-color);
+            margin-top: 15px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+            color: var(--text-main);
+            border-color: #d1d5db;
+        }
+
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        /* --- RESULT PAGE --- */
+        textarea {
+            width: 100%;
+            height: 350px;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #1e293b; /* Dark code editor theme */
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            resize: none;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* --- ANIMATION --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: PROMPT BUILDER -->
+    <div id="page-builder" class="container fade-in">
+        <h1>PromptFactory</h1>
+        <p class="subtitle">Design the perfect AI engineering prompt.</p>
+        
+        <form id="promptForm">
+            
+            <!-- 1. What to build (Dropdown) -->
+            <div class="form-group">
+                <label for="appType" class="section-label">What are you building?</label>
+                <select id="appType" required>
+                    <option value="" disabled selected>Select project type...</option>
+                    <option value="Website">Website</option>
+                    <option value="Mobile App">Mobile App</option>
+                    <option value="Desktop Application">Desktop Application</option>
+                </select>
+            </div>
+
+            <!-- 2. User Level (Chips) -->
+            <div class="form-group">
+                <label class="section-label">Your Experience Level</label>
+                <div class="radio-group">
+                    <input type="radio" id="lvl-student" name="userLevel" value="Student" checked>
+                    <label for="lvl-student" class="radio-chip">Student</label>
+
+                    <input type="radio" id="lvl-beginner" name="userLevel" value="Beginner">
+                    <label for="lvl-beginner" class="radio-chip">Beginner</label>
+
+                    <input type="radio" id="lvl-pro" name="userLevel" value="Professional">
+                    <label for="lvl-pro" class="radio-chip">Professional</label>
+                </div>
+            </div>
+
+            <!-- 3. Technology Preference (Conditional Dropdown) -->
+            <div class="form-group">
+                <label for="techPreference" class="section-label">Technology Preference</label>
+                <select id="techPreference">
+                    <option value="Let AI decide">Let AI decide</option>
+                </select>
+            </div>
+
+            <!-- 4. UI Style (Chips) -->
+            <div class="form-group">
+                <label class="section-label">UI Design Style</label>
+                <div class="radio-group">
+                    <input type="radio" id="ui-basic" name="uiStyle" value="Basic" checked>
+                    <label for="ui-basic" class="radio-chip">Basic / Minimal</label>
+
+                    <input type="radio" id="ui-modern" name="uiStyle" value="Modern">
+                    <label for="ui-modern" class="radio-chip">Modern</label>
+
+                    <input type="radio" id="ui-pro" name="uiStyle" value="Professional">
+                    <label for="ui-pro" class="radio-chip">Corporate</label>
+                </div>
+            </div>
+
+            <!-- 5. AI Platform (Dropdown) -->
+            <div class="form-group">
+                <label for="aiPlatform" class="section-label">Target AI Model</label>
+                <select id="aiPlatform">
+                    <option value="ChatGPT">ChatGPT (OpenAI)</option>
+                    <option value="Gemini">Gemini (Google)</option>
+                    <option value="Claude">Claude (Anthropic)</option>
+                </select>
+            </div>
+
+            <!-- 6. Generate Button -->
+            <button type="button" id="generateBtn" class="btn btn-primary">Generate Prompt</button>
+        </form>
+    </div>
+
+    <!-- PAGE 2: RESULT PAGE -->
+    <div id="page-result" class="container hidden">
+        <h2>Ready to Copy</h2>
+        <p class="subtitle">Paste this into your AI chat.</p>
+        
+        <textarea id="resultOutput" readonly></textarea>
+        
+        <button id="copyBtn" class="btn btn-success">Copy to Clipboard</button>
+        <button id="backBtn" class="btn btn-secondary">Edit Choices</button>
+    </div>
+
+    <script>
+        /* --- DATA & STATE --- */
+        const techOptionsData = {
+            "Website": [
+                "Let AI decide", 
+                "Vanilla HTML/CSS/JS", 
+                "React + Tailwind", 
+                "Next.js (App Router)",
+                "Vue.js"
+            ],
+            "Mobile App": [
+                "Let AI decide", 
+                "Flutter (Dart)", 
+                "React Native (Expo)", 
+                "Native Android (Kotlin)"
+            ],
+            "Desktop Application": [
+                "Let AI decide", 
+                "Electron (JS/TS)", 
+                "Tauri (Rust/JS)", 
+                "Python (Tkinter/PyQt)",
+                "JavaFX"
+            ]
+        };
+
+        /* --- DOM ELEMENTS --- */
+        const pageBuilder = document.getElementById('page-builder');
+        const pageResult = document.getElementById('page-result');
+        const appTypeSelect = document.getElementById('appType');
+        const techSelect = document.getElementById('techPreference');
+        const aiPlatformSelect = document.getElementById('aiPlatform');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultOutput = document.getElementById('resultOutput');
+        const copyBtn = document.getElementById('copyBtn');
+        const backBtn = document.getElementById('backBtn');
+
+        /* --- CONDITIONAL LOGIC --- */
+        appTypeSelect.addEventListener('change', function() {
+            const selectedType = this.value;
+            const optionsList = techOptionsData[selectedType];
+            
+            techSelect.innerHTML = "";
+            
+            if (optionsList) {
+                optionsList.forEach(tech => {
+                    const newOption = document.createElement('option');
+                    newOption.value = tech;
+                    newOption.textContent = tech;
+                    techSelect.appendChild(newOption);
+                });
+            } else {
+                techSelect.add(new Option("Let AI decide", "Let AI decide"));
+            }
+        });
+
+        /* --- DYNAMIC PROMPT BUILDER --- */
+        function buildPrompt(data) {
+            // 1. Determine Tone based on User Level
+            let roleInstruction = "Act as an expert Software Architect.";
+            let teachingStyle = "";
+            
+            if (data.level === "Student") {
+                roleInstruction = "Act as a Patient Mentor and Code Instructor.";
+                teachingStyle = "Explain every step simply. Focus on core concepts and avoid over-engineering. Comment every major line of code.";
+            } else if (data.level === "Professional") {
+                roleInstruction = "Act as a Senior Tech Lead.";
+                teachingStyle = "Focus on scalability, clean architecture, and industry best practices. Skip basic explanations.";
+            } else {
+                teachingStyle = "Provide clear, beginner-friendly instructions but ensure the code is production-ready.";
+            }
+
+            // 2. Determine Specific Focus based on App Type
+            let projectFocus = "";
+            if (data.type === "Website") {
+                projectFocus = "- Ensure the site is fully responsive (Mobile-First).\n- Use semantic HTML5.\n- Focus on accessibility (a11y).";
+            } else if (data.type === "Mobile App") {
+                projectFocus = "- Focus on a native-like feel.\n- Explain how to run the simulator/emulator.\n- Handle safe areas (notches).";
+            } else {
+                projectFocus = "- Ensure cross-platform compatibility (Windows/Mac/Linux).\n- Focus on a clean desktop UI window management.";
+            }
+
+            // 3. Construct the Structured Markdown Prompt
+            return `# Role
+${roleInstruction}
+
+# Project Overview
+I am a ${data.level} developer building a MVP ${data.type}.
+- **Tech Stack:** ${data.tech}
+- **Design Style:** ${data.style}
+- **Platform:** ${data.platform}
+
+# Your Goal
+Provide a complete, step-by-step guide to build this project from scratch.
+
+# Requirements
+1. **Architecture & Setup:** - Suggest the best folder structure.
+   - List necessary dependencies/installations.
+   
+2. **Code Implementation:**
+   - Provide the *complete* code for the main entry point.
+   - Separate styles and logic where appropriate.
+   
+3. **Specific Constraints:**
+${projectFocus}
+
+4. **Teaching Style:**
+${teachingStyle}
+
+# Output Format
+- Use Markdown.
+- Use code blocks for all code.
+- Be concise but complete.`;
+        }
+
+        /* --- EVENT LISTENERS --- */
+        generateBtn.addEventListener('click', function() {
+            if (appTypeSelect.value === "") {
+                // Simple shake animation or alert could go here
+                appTypeSelect.focus();
+                alert("Please select a project type first.");
+                return;
+            }
+
+            // Collect Data
+            const formData = {
+                type: appTypeSelect.value,
+                level: document.querySelector('input[name="userLevel"]:checked').value,
+                tech: techSelect.value,
+                style: document.querySelector('input[name="uiStyle"]:checked').value,
+                platform: aiPlatformSelect.value
+            };
+
+            // Generate
+            const promptText = buildPrompt(formData);
+            resultOutput.value = promptText;
+
+            // Transition
+            pageBuilder.classList.add('hidden');
+            pageResult.classList.remove('hidden');
+            pageResult.classList.add('fade-in');
+        });
+
+        copyBtn.addEventListener('click', function() {
+            resultOutput.select();
+            document.execCommand('copy');
+            
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = "Copied to Clipboard!";
+            copyBtn.style.backgroundColor = "#059669";
+            
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+                copyBtn.style.backgroundColor = ""; // revert to CSS default
+            }, 2000);
+        });
+
+        backBtn.addEventListener('click', function() {
+            pageResult.classList.add('hidden');
+            pageBuilder.classList.remove('hidden');
+            pageBuilder.classList.add('fade-in');
+        });
+
+    </script>
+</body>
+</html>
