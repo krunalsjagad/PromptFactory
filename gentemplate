@@ -1,0 +1,191 @@
+```json
+{
+  "template_id": "universal_app_builder_v1",
+  "version": "1.0",
+  "status": "stable",
+
+  "metadata": {
+    "application_type": "{{application_type}}",
+    "experience_level": "{{experience_level}}",
+    "technology_preference": "{{technology_preference}}",
+    "target_ai": "{{target_ai}}",
+    "ui_style": "{{ui_style}}",
+    "architecture_style": "{{architecture_style}}"
+  },
+
+  "user_inputs_schema": {
+    "application_type": ["website", "mobile_app", "desktop_app"],
+    "experience_level": ["student", "beginner", "professional"],
+    "technology_preference": ["let_ai_decide", "user_selected"],
+    "target_ai": ["chatgpt", "gemini", "claude"],
+    "ui_style": ["basic", "modern", "professional"],
+    "architecture_style": ["monolithic", "modular", "microservices", "serverless"],
+    "constraints": {
+      "time": "optional",
+      "performance": "optional",
+      "scalability": "optional"
+    }
+  },
+
+  "global_rules": {
+    "tone_map": {
+      "student": "educational and explanatory",
+      "beginner": "clear and step-by-step",
+      "professional": "concise and execution-focused"
+    },
+    "detail_level_map": {
+      "student": "very_detailed",
+      "beginner": "moderate",
+      "professional": "minimal"
+    },
+    "technology_selection_rule": {
+      "if": "technology_preference == 'let_ai_decide'",
+      "then": "AI must choose technologies and justify them",
+      "else": "AI must strictly follow user-selected technologies"
+    },
+    "ai_formatting_rules": {
+      "chatgpt": "markdown",
+      "gemini": "plain_text",
+      "claude": "xml_like_sections"
+    }
+  },
+
+  "context_template": {
+    "base": "The user is building a {{application_type}} application.",
+    "experience_modifier": {
+      "student": "Explain concepts deeply with examples and learning intent.",
+      "beginner": "Explain decisions briefly before execution.",
+      "professional": "Skip explanations unless strictly necessary."
+    },
+    "constraints_modifier": "Respect constraints related to time, performance, and scalability provided by the user."
+  },
+
+  "prompt_wrapper": {
+    "structure": [
+      "You are acting as a {{role}}.",
+      "Context:",
+      "{{context}}",
+      "Your Objective:",
+      "{{objective}}",
+      "Instructions:",
+      "{{instructions}}",
+      "Constraints:",
+      "{{constraints}}",
+      "Output Format:",
+      "{{output_format}}"
+    ]
+  },
+
+  "prompt_sequence": [
+    {
+      "step": 1,
+      "stage": "Architecture & Planning",
+      "role": "Software Architect",
+      "objective": "Design the system architecture and select an appropriate technology stack.",
+      "instructions": [
+        "Ask clarifying questions before making assumptions.",
+        "Select or validate the architecture style.",
+        "Select or validate the technology stack.",
+        "Justify architectural decisions based on user experience level.",
+        "Define a high-level project structure."
+      ],
+      "output_format": [
+        "Clarifying Questions",
+        "Architecture Decisions",
+        "Technology Stack",
+        "Project Structure"
+      ],
+      "constraints": [
+        "Do not write implementation code",
+        "Explanation depth must match experience level"
+      ]
+    },
+
+    {
+      "step": 2,
+      "stage": "Environment Setup",
+      "role": "Senior Software Engineer",
+      "objective": "Prepare the complete development environment.",
+      "instructions": [
+        "List required tools and dependencies.",
+        "Provide OS-specific installation steps.",
+        "Include verification steps."
+      ],
+      "output_format": [
+        "Required Tools",
+        "Setup Instructions",
+        "Verification Steps"
+      ],
+      "constraints": [
+        "Avoid unnecessary theory",
+        "Prefer official documentation"
+      ]
+    },
+
+    {
+      "step": 3,
+      "stage": "Core Development",
+      "role": "Senior Software Engineer",
+      "objective": "Build the core functionality of the application.",
+      "instructions": [
+        "Break work into logical features.",
+        "Provide implementation steps appropriate to experience level.",
+        "Explain file responsibilities and data flow.",
+        "Highlight common mistakes."
+      ],
+      "output_format": [
+        "Feature Breakdown",
+        "Implementation",
+        "Explanation",
+        "Common Pitfalls"
+      ],
+      "constraints": [
+        "Code must be functional",
+        "Avoid overengineering"
+      ]
+    },
+
+    {
+      "step": 4,
+      "stage": "Testing & Validation",
+      "role": "QA Engineer",
+      "objective": "Validate correctness and stability.",
+      "instructions": [
+        "Define testing steps.",
+        "List common bugs and fixes.",
+        "Suggest limited improvements."
+      ],
+      "output_format": [
+        "Testing Checklist",
+        "Known Issues",
+        "Improvement Suggestions"
+      ],
+      "constraints": [
+        "Manual testing preferred",
+        "No enterprise testing frameworks"
+      ]
+    },
+
+    {
+      "step": 5,
+      "stage": "Deployment",
+      "role": "DevOps Engineer",
+      "objective": "Deploy the application for public access.",
+      "instructions": [
+        "Select an appropriate hosting platform.",
+        "Provide deployment steps.",
+        "Explain update process."
+      ],
+      "output_format": [
+        "Deployment Platform",
+        "Deployment Steps",
+        "Post-Deployment Guidance"
+      ],
+      "constraints": [
+        "Prefer low-cost or free platforms",
+        "Avoid complex CI/CD"
+      ]
+    }
+  ]
+}
+```
