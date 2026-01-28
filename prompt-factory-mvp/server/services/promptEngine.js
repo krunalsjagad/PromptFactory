@@ -1,21 +1,18 @@
 const fs = require("fs");
 const path = require("path");
 
-// Load the JSON Template safely
-const loadTemplate = () => {
-  try {
-    const templatePath = path.join(
-      __dirname,
-      "../templates/universal_app_builder_v1.json"
-    );
-    const fileData = fs.readFileSync(templatePath, "utf8");
-    return JSON.parse(fileData);
-  } catch (err) {
-    throw new Error("Failed to load prompt template JSON");
-  }
-};
+// 1. Load the template ONCE at the top level
+const templatePath = path.join(__dirname, "../templates/universal_app_builder_v1.json");
+let TEMPLATE_CACHE = null;
 
-// Simple text interpolation {{variable}}
+try {
+  const fileData = fs.readFileSync(templatePath, "utf8");
+  TEMPLATE_CACHE = JSON.parse(fileData);
+} catch (err) {
+  console.error("Failed to load prompt template:", err);
+  process.exit(1); // Kill server if critical file is missing
+}
+
 const interpolate = (text, data) => {
   if (!text) return "";
   return text.replace(/\{\{(\w+)\}\}/g, (_, key) => {
@@ -28,7 +25,8 @@ const generatePrompts = (userInput) => {
     throw new Error("Invalid user input");
   }
 
-  const template = loadTemplate();
+  // 2. Use the cached variable instead of reading the file again
+  const template = TEMPLATE_CACHE;
 
   const {
     application_type,

@@ -4,6 +4,7 @@ import { useState } from "react";
 export default function GeneratorForm() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
+  const [copiedIndex, setCopiedIndex] = useState(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -22,8 +23,6 @@ export default function GeneratorForm() {
   };
 
   const handleSubmit = async () => {
-    // --- GATEKEEPER REMOVED ---
-    // We no longer check for isSignedIn here.
 
     if (!formData.application_type) {
         alert("Please select an application type.");
@@ -57,9 +56,11 @@ export default function GeneratorForm() {
     }
   };
 
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+  const handleCopy = (text, index) => {
+  navigator.clipboard.writeText(text);
+  setCopiedIndex(index);
+  // Reset back to "Copy" after 2 seconds
+  setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   // Helper Chip
@@ -176,7 +177,7 @@ export default function GeneratorForm() {
                 <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-center mb-3">
                     <span className="font-bold text-indigo-700 text-sm tracking-wide uppercase">Step {prompt.step_number}: {prompt.stage}</span>
-                    <button onClick={() => handleCopy(prompt.content)} className="text-xs bg-white border border-gray-300 hover:border-indigo-500 text-gray-600 hover:text-indigo-600 px-3 py-1 rounded-md transition-colors">Copy</button>
+                    <button onClick={() => handleCopy(prompt.content, index)} className="text-xs bg-white border border-gray-300 hover:border-indigo-500 text-gray-600 hover:text-indigo-600 px-3 py-1 rounded-md transition-colors">{copiedIndex === index ? "Copied" : "Copy"}</button>
                   </div>
                   <pre className="text-xs md:text-sm text-gray-600 whitespace-pre-wrap font-mono leading-relaxed bg-white p-4 rounded border border-gray-100">{prompt.content}</pre>
                 </div>

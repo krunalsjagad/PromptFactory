@@ -5,8 +5,18 @@ const { generatePrompts } = require("./services/promptEngine");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Allow requests ONLY from your frontend
+const allowedOrigins = [
+  "http://localhost:3000", 
+  "https://prompt-factory.vercel.app",
+  "https://chikoochi.com",
+];
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins
+}));
+
 app.use(express.json());
 
 // Health Check
